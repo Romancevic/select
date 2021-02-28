@@ -1,0 +1,940 @@
+<html lang="en"><head>
+        <!-- Meta and title tags -->
+        <meta charset="utf-8">
+        <title>Gazetteer</title>
+        <meta name="description" content="GAZETTEER">
+        <meta name="author" content="V Romancevics">
+        <meta property="og:image" content="media/img/thumbnail.png">
+      	<meta property="og:type" content="website">
+      	<meta property="og:title" content="GAZETTEER">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link rel="icon" type="image/png" sizes="16x16" href="favicon.png" />
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+        <!-- Leaflet CSS and script -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css">
+        <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" type="text/css" href="libs/css/styles.css">
+    <style>._3emE9--dark-theme .-S-tR--ff-downloader{background:rgba(30,30,30,.93);border:1px solid rgba(82,82,82,.54);box-shadow:0 4px 7px rgba(30,30,30,.55);color:#fff}._3emE9--dark-theme .-S-tR--ff-downloader ._6_Mtt--header ._2VdJW--minimize-btn{background:#3d4b52}._3emE9--dark-theme .-S-tR--ff-downloader ._6_Mtt--header ._2VdJW--minimize-btn:hover{background:#131415}._3emE9--dark-theme .-S-tR--ff-downloader ._10vpG--footer{background:rgba(30,30,30,.93)}._2mDEx--white-theme .-S-tR--ff-downloader{background:#fff;border:1px solid rgba(82,82,82,.54);box-shadow:0 4px 7px rgba(30,30,30,.55);color:#314c75}._2mDEx--white-theme .-S-tR--ff-downloader ._6_Mtt--header{font-weight:700}._2mDEx--white-theme .-S-tR--ff-downloader ._2dFLA--container ._2bWNS--notice{border:0;color:rgba(0,0,0,.88)}._2mDEx--white-theme .-S-tR--ff-downloader ._10vpG--footer{background:#fff}.-S-tR--ff-downloader{display:block;overflow:hidden;position:fixed;bottom:20px;right:7.1%;width:330px;height:180px;background:rgba(30,30,30,.93);border-radius:2px;color:#fff;z-index:99999999;border:1px solid rgba(82,82,82,.54);box-shadow:0 4px 7px rgba(30,30,30,.55);transition:.5s}.-S-tR--ff-downloader._3M7UQ--minimize{height:62px}.-S-tR--ff-downloader._3M7UQ--minimize .nxuu4--file-info,.-S-tR--ff-downloader._3M7UQ--minimize ._6_Mtt--header{display:none}.-S-tR--ff-downloader ._6_Mtt--header{padding:10px;font-size:17px;font-family:sans-serif}.-S-tR--ff-downloader ._6_Mtt--header ._2VdJW--minimize-btn{float:right;background:#f1ecec;height:20px;width:20px;text-align:center;padding:2px;margin-top:-10px;cursor:pointer}.-S-tR--ff-downloader ._6_Mtt--header ._2VdJW--minimize-btn:hover{background:#e2dede}.-S-tR--ff-downloader ._13XQ2--error{color:red;padding:10px;font-size:12px;line-height:19px}.-S-tR--ff-downloader ._2dFLA--container{position:relative;height:100%}.-S-tR--ff-downloader ._2dFLA--container .nxuu4--file-info{padding:6px 15px 0;font-family:sans-serif}.-S-tR--ff-downloader ._2dFLA--container .nxuu4--file-info div{margin-bottom:5px;width:100%;overflow:hidden}.-S-tR--ff-downloader ._2dFLA--container ._2bWNS--notice{margin-top:21px;font-size:11px}.-S-tR--ff-downloader ._10vpG--footer{width:100%;bottom:0;position:absolute;font-weight:700}.-S-tR--ff-downloader ._10vpG--footer ._2V73d--loader{-webkit-animation:n0BD1--rotation 3.5s linear forwards;animation:n0BD1--rotation 3.5s linear forwards;position:absolute;top:-120px;left:calc(50% - 35px);border-radius:50%;border:5px solid #fff;border-top-color:#a29bfe;height:70px;width:70px;display:flex;justify-content:center;align-items:center}.-S-tR--ff-downloader ._10vpG--footer ._24wjw--loading-bar{width:100%;height:18px;background:#dfe6e9;border-radius:5px}.-S-tR--ff-downloader ._10vpG--footer ._24wjw--loading-bar ._1FVu9--progress-bar{height:100%;background:#8bc34a;border-radius:5px}.-S-tR--ff-downloader ._10vpG--footer ._2KztS--status{margin-top:10px}.-S-tR--ff-downloader ._10vpG--footer ._2KztS--status ._1XilH--state{float:left;font-size:.9em;letter-spacing:1pt;text-transform:uppercase;width:100px;height:20px;position:relative}.-S-tR--ff-downloader ._10vpG--footer ._2KztS--status ._1jiaj--percentage{float:right}</style>
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css" rel="stylesheet" />
+
+</head>
+
+    <body onload="loadMap()" style="" class="">
+        <nav id="navbar" class="nav">
+            <select id="selectCountry" class="custom-select custom-select-md" name="Choose country">
+                <option value="" disabled="" selected="">Select country</option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+
+
+			<!--
+                <a href="index.html"><img src="media/img/logo.png" width="auto" height="auto" class="d-inline-block align-top" style="margin-left: 5px;"></a>
+				-->
+
+            </select>
+
+			<button id="btnInfo" type="button" class="btn btn-primary" data-toggle="modal" data-target="#infoModal"  display: block;">More info</button>
+
+     <!--       	<div id="btnDiv" class="container">
+                Button trigger trackISS -->
+                <!-- <button id="btnISS" type="button" class="btn btn-primary" style="width: 120px;">Track ISS</button>
+                Button trigger modal
+                <button id="btnInfo" type="button" class="btn btn-primary" data-toggle="modal" data-target="#infoModal" style="margin-left: 3px; width: 120px; display: block;">More info</button>
+          -->    <!--   <a href="index.html"><img src="media/img/logo.png" width="auto" height="auto" class="d-inline-block align-top" style="margin-left: 5px;"></a>
+          	-->
+			</div>
+        </nav>
+
+        <!-- Modal -->
+        <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true" color="green" >
+            <div class="modal-dialog modal-dialog-scrollable">
+                <div class="modal-content">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" >×</span>
+                    </button>
+
+                    <div class="modal-body">
+                        <!-- Body content-->
+                        <table id="table1" class="table table-sm table-hover">
+                            <tbody><tr>
+                                <th id="country-name" align="left" scope="row">Mongolia</th>
+                                <td id="country-flag"><img src="https://www.countryflags.io/MN/shiny/64.png"></td>
+                            </tr>
+                            <tr>
+                                <th align="left" scope="row">Continent</th>
+                                <td id="continent">AS</td>
+                            </tr>
+                            <tr>
+                                <th align="left" scope="row">Capital</th>
+                                <td id="capital">Ulaanbaatar</td>
+                            </tr>
+                            <tr>
+                                <th align="left" scope="row">Languages</th>
+                                <td id="languages">mn,ru</td>
+                            </tr>
+                            <tr>
+                                <th align="left" scope="row">Population</th>
+                                <td id="population">3.17 mln</td>
+                            </tr>
+                            <tr>
+                                <th align="left" scope="row">Area</th>
+                                <td id="area">1.56 mln km<sup>2</sup></td>
+                            </tr>
+                            <tr>
+                                <th align="left" scope="row">Currency</th>
+                                <td id="currency">MNT</td>
+                            </tr>
+                            <tr>
+                                <th align="left" scope="row" id="exchangeTitle">USD/MNT XR:</th>
+                                <td id="exchangeRate">2849.785349</td>
+                            </tr>
+                            <tr>
+                                <th align="left" scope="row">Temperature</th>
+                                <td id="temperature">-16 <sup>o</sup>C</td>
+                            </tr>
+                            <tr>
+                                <th align="left" scope="row">Humidity</th>
+                                <td id="humidity">65 %</td>
+                            </tr>
+                            <tr>
+                                <th align="left" scope="row">Pressure</th>
+                                <td id="pressure">1010 hPa</td>
+                            </tr>
+                        </tbody></table>
+                        <div id="apiCont">
+                            <div class="news_list">
+                                <div class="news_item">
+                                    <a href="" target="_blank">
+                                        <div class="news_title"></div>
+                                        <div class="news_description"></div>
+                                        <div class="news_author"></div>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="currency">
+                                <div class="currency_divider"></div>
+                                <input value="1" id="currency_input"/>
+                                <input id="currency_output"/>
+                            </div>
+
+                            <div class="borders_list">
+                                <div class="borders_title"></div>
+                                <div class="border">
+                                    <div>
+                                        <img src=""/>
+                                    </div>
+                                    <div class="border_name"></div>
+                                </div>
+                                <div class="border">
+                                    <div>
+                                        <img src=""/>
+                                    </div>
+                                    <div class="border_name"></div>
+                                </div>
+                                <div class="border">
+                                    <div>
+                                        <img src=""/>
+                                    </div>
+                                    <div class="border_name"></div>
+                                </div>
+                                <div class="border">
+                                    <div>
+                                        <img src=""/>
+                                    </div>
+                                    <div class="border_name"></div>
+                                </div>
+                                <div class="border">
+                                    <div>
+                                        <img src=""/>
+                                    </div>
+                                    <div class="border_name"></div>
+                                </div>
+                                <div class="border">
+                                    <div>
+                                        <img src=""/>
+                                    </div>
+                                    <div class="border_name"></div>
+                                </div>
+                                <div class="border">
+                                    <div>
+                                        <img src=""/>
+                                    </div>
+                                    <div class="border_name"></div>
+                                </div>
+                                <div class="border">
+                                    <div>
+                                        <img src=""/>
+                                    </div>
+                                    <div class="border_name"></div>
+                                </div>
+                                <div class="border">
+                                    <div>
+                                        <img src=""/>
+                                    </div>
+                                    <div class="border_name"></div>
+                                </div>
+                                <div class="border">
+                                    <div>
+                                        <img src=""/>
+                                    </div>
+                                    <div class="border_name"></div>
+                                </div>
+                                <div class="border">
+                                    <div>
+                                        <img src=""/>
+                                    </div>
+                                    <div class="border_name"></div>
+                                </div>
+
+                            </div>
+
+                            <div class="api">
+                                <div class="api-main-title"></div>
+                                <div class="api-main-container">
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                </div>
+                                <div class="api-main-note"></div>
+                            </div>
+                            <div class="api">
+                                <div class="api-main-title"></div>
+                                <div class="api-main-container">
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                </div>
+                                <div class="api-main-note"></div>
+                            </div>
+                            <div class="api">
+                                <div class="api-main-title"></div>
+                                <div class="api-main-container">
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                </div>
+                                <div class="api-main-note"></div>
+                            </div>
+                            <div class="api">
+                                <div class="api-main-title"></div>
+                                <div class="api-main-container">
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                </div>
+                                <div class="api-main-note"></div>
+                            </div>
+                            <div class="api">
+                                <div class="api-main-title"></div>
+                                <div class="api-main-container">
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                    <div class="api-container">
+                                        <div class="api-title"></div>
+                                        <div class="api-text"></div>
+                                        <img class="api-image"/>
+                                        <div class="api-note"></div>
+                                        <a class="api-link" target="_blank"></a>
+                                    </div>
+                                </div>
+                                <div class="api-main-note"></div>
+                            </div>
+                        </div>
+                        <p id="issPass" style="text-align: center;"></p>
+                        <table id="table2" class="table table-sm table-hover">
+                        </table>
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="loadingMap" style="display: none;">
+            <img id="loadingGif" src="media/gifs/ajax-loader.gif" alt="Loading resources">
+        </div>
+
+		<div id="map"></div>
+
+        <script type="application/javascript" src="libs/js/jquery-2.2.3.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+        <script type="application/javascript" src="libs/js/script.js?2"></script>
+        <script>
+            $(window).load(function() {
+                $('#loadingMap').hide();
+            });
+        </script>
+
+		<div class='loadingCountry'>
+			<div><img src='media/img/loading_1.gif'></div>
+		</div>
+		<style>
+			.loadingCountry {position: absolute; width: 100%; height: 100%; top: 0; left: 0; background-color: rgba(0, 0, 0, .5); display: none;}
+			.loadingCountry > div {position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);}
+		</style>
+		<script>
+			$(document).on('keyup', function(e) {
+
+				if(e.keyCode == 27) {
+					$('.loadingCountry').hide();
+				}
+			});
+		</script>
+</body>
+</html>
